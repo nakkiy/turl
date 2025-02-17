@@ -62,6 +62,9 @@ impl App {
 
         req = req.header("User-Agent", format!("TURL/{}", env!("CARGO_PKG_VERSION")));
         for (key, value) in &self.headers {
+            if key.is_empty() {
+                continue;
+            }
             req = req.header(key, value);
         }
 
