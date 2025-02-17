@@ -17,15 +17,18 @@ pub struct App {
     pub params: Vec<(String, String)>,
     pub body: String,
     pub response: ResponseData,
-    pub input_mode: InputMode,
+    pub focus: Focus,
+    pub selected_index: usize,
 }
 #[derive(PartialEq, Clone, Debug)]
-pub enum InputMode {
+pub enum Focus {
     Url,
     Method,
     Headers,
     Params,
     Body,
+    ResponseHeaders,
+    ResponseBody,
     None,
 }
 
@@ -36,7 +39,11 @@ impl App {
         Self {
             url: "https://httpbin.org/get".to_string(),
             method: Method::GET,
-            headers: vec![("Content-Type".to_string(), "application/json".to_string())],
+            headers: vec![
+                ("Content-Type".to_string(), "application/json".to_string()),
+                ("hoge".to_string(), "huga".to_string()),
+                ("".to_string(), "".to_string()),
+            ],
             params: vec![("".to_string(), "".to_string())],
             body: "".to_string(),
             response: ResponseData {
@@ -44,7 +51,8 @@ impl App {
                 headers: vec![],
                 body: "".to_string(),
             },
-            input_mode: InputMode::None,
+            focus: Focus::None,
+            selected_index: 0,
         }
     }
 

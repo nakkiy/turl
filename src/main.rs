@@ -1,6 +1,7 @@
 mod app;
 mod ui;
-mod event_handler;
+mod event;
+mod widgets;
 
 use crate::app::{App, ResponseData};
 use ratatui::backend::CrosstermBackend;
@@ -42,7 +43,7 @@ async fn main() -> io::Result<()> {
         terminal.draw(|f| ui::draw_ui(f, &mut app))?;
 
         // イベントの処理
-        if event_handler::handle_events(&mut app, &methods, &tx).await? {
+        if event::event_handler::handle_events(&mut app, &methods, &tx).await? {
             break;
         }
 
