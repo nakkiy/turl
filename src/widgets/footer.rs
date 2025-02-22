@@ -22,7 +22,7 @@ pub fn draw(f: &mut Frame, area: Rect, app: &App) {
                 Span::styled("^Q", Style::default().fg(Color::LightBlue)),
                 Span::raw(":Quit"),
             ]),
-            Focus::Url =>
+        Focus::Url =>
             Line::from(vec![
                 Span::styled("^S", Style::default().fg(Color::LightBlue)),
                 Span::raw(":Save "),
@@ -102,6 +102,17 @@ pub fn draw(f: &mut Frame, area: Rect, app: &App) {
                 Span::raw(":Response Header "),
                 Span::styled("alt+R", Style::default().fg(Color::LightBlue)),
                 Span::raw(":Response "),
+                Span::styled("^S", Style::default().fg(Color::LightBlue)),
+                Span::raw(":Save "),
+                Span::styled("^L", Style::default().fg(Color::LightBlue)),
+                Span::raw(":Load "),
+                Span::styled("^J", Style::default().fg(Color::LightBlue)),
+                Span::raw(":Send "),
+                Span::styled("^Q", Style::default().fg(Color::LightBlue)),
+                Span::raw(":Quit"),
+            ]),
+        Focus::Popup =>
+            Line::from(vec![
                 Span::styled("^S", Style::default().fg(Color::LightBlue)),
                 Span::raw(":Save "),
                 Span::styled("^L", Style::default().fg(Color::LightBlue)),

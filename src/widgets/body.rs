@@ -1,14 +1,19 @@
 use ratatui::{
     layout::Rect,
-    style::{Color, Style},
-    widgets::{Block, Borders, Paragraph},
+    style::{Color, Modifier, Style},
+    widgets::{Block, Borders},
     Frame,
 };
 use crate::app::{App, Focus};
 
-pub fn draw(f: &mut Frame, area: Rect, app: &App) {
-    let block = Paragraph::new(app.body.as_str())
-    .block(
+pub fn draw(f: &mut Frame, area: Rect, app: &mut App) {
+    app.body.set_cursor_style(if app.focus == Focus::Body {
+        Style::default().add_modifier(Modifier::REVERSED)
+    } else {
+        Style::default()
+    });
+
+    app.body.set_block(
         Block::default()
         .borders(Borders::ALL)
         .title("Body")
@@ -28,5 +33,5 @@ pub fn draw(f: &mut Frame, area: Rect, app: &App) {
             })
         )
     );
-    f.render_widget(block, area);
+    f.render_widget(&app.body, area);
 }

@@ -4,5 +4,6 @@ pub mod headers;
 pub mod params;
 pub mod body;
 pub mod response_headers;
-pub mod response;
+pub mod response_body;
 pub mod footer;
+pub mod popup;

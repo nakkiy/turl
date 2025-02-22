@@ -1,21 +1,19 @@
 use crate::app::{App, Focus};
-use crossterm::event::KeyCode;
 use std::io;
+use tui_textarea::{Input, Key};
 
-pub fn handle_events(app: &mut App, code: KeyCode) -> io::Result<bool> {
-    match code {
-        KeyCode::Char(c) => {
-            app.url.push(c);
-        }
-        KeyCode::Backspace => {
-            app.url.pop();
-        },
-        KeyCode::Esc => {
+pub fn handle_events(app: &mut App, input: Input) -> io::Result<bool> {
+    match input {
+        Input { key: Key::Esc, .. } => {
             if app.focus != Focus::None {
                 app.focus = Focus::None;
             }
-        },
-        _ => {}
+        }
+        Input { key: Key::Enter, .. } => {
+        }
+        input => {
+            app.url.input(input);
+        }
     }
     Ok(false)
 }

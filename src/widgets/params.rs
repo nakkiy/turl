@@ -7,7 +7,7 @@ use ratatui::{
 use crate::app::{App, Focus};
 use ratatui::text::{Line, Span};
 
-pub fn draw(f: &mut Frame, area: Rect, app: &App) {
+pub fn draw(f: &mut Frame, area: Rect, app: &mut App) {
     let headers_items: Vec<ListItem> = app.params.iter()
         .enumerate()
         .map(|(i, &(ref k, ref v))| {
@@ -55,5 +55,5 @@ pub fn draw(f: &mut Frame, area: Rect, app: &App) {
             )
         );
     
-    f.render_widget(list, area);
+    f.render_stateful_widget(list, area, &mut app.list_states.params);
 }
