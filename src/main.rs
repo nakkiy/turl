@@ -1,6 +1,8 @@
 mod app;
 mod ui;
-mod event_handler;
+mod event;
+mod widgets;
+mod utils;
 
 use crate::app::{App, ResponseData};
 use ratatui::backend::CrosstermBackend;
@@ -10,11 +12,30 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use reqwest::Method;
-use std::io::{self, stdout};
+use std::io::stderr;
 use tokio::sync::mpsc;
+use structopt::StructOpt;
+
+#[derive(StructOpt, Debug)]
+#[structopt(name = "turl", about = "TUI HTTP client.")]
+struct Opt {
+    /// Show status
+    #[structopt(short = "s", long = "status")]
+    show_status: bool,
+
+    /// Show headers
+    #[structopt(short = "h", long = "headers")]
+    show_headers: bool,
+
+    /// Show body
+    #[structopt(short = "b", long = "body")]
+    show_body: bool,
+}
 
 #[tokio::main]
-async fn main() -> io::Result<()> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let opt = Opt::from_args();
+
     // logger初期化
     let log_file = std::sync::Arc::new(std::fs::File::create("./log.log").unwrap());
     tracing_subscriber::fmt()
@@ -27,9 +48,9 @@ async fn main() -> io::Result<()> {
     tracing::debug!("start turl");
 
     enable_raw_mode()?;
-    let mut stdout = stdout();
-    execute!(stdout, EnterAlternateScreen)?;
-    let backend = CrosstermBackend::new(stdout);
+    let mut stderr = stderr();
+    execute!(stderr, EnterAlternateScreen)?;
+    let backend = CrosstermBackend::new(stderr);
     let mut terminal = Terminal::new(backend)?;
 
     let mut app = App::new();
@@ -42,7 +63,7 @@ async fn main() -> io::Result<()> {
         terminal.draw(|f| ui::draw_ui(f, &mut app))?;
 
         // イベントの処理
-        if event_handler::handle_events(&mut app, &methods, &tx).await? {
+        if event::event_handler::handle_events(&mut app, &methods, &tx).await? {
             break;
         }
 
@@ -55,5 +76,17 @@ async fn main() -> io::Result<()> {
     // 終了時の処理
     disable_raw_mode()?;
     execute!(terminal.backend_mut(), LeaveAlternateScreen)?;
+
+    if opt.show_status {
+        println!("{}", app.format_stdout_status()?);
+    }
+    if opt.show_headers {
+        println!("{}", app.format_stdout_header()?);
+    }
+    if opt.show_body {
+        println!("{}", app.format_stdout_body()?);
+    }
+
+    tracing::debug!("start end");
     Ok(())
 }
