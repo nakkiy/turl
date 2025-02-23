@@ -24,7 +24,10 @@ pub fn centered_rect(percent_x: u16, percent_y: u16, r: Rect) -> Rect {
 }
 
 pub fn add_empty(vec: &mut Vec<(String, String)>) {
-    if vec.last().map_or(true, |(k, v)| !k.is_empty() || !v.is_empty()) {
+    if vec
+        .last()
+        .map_or(true, |(k, v)| !k.is_empty() || !v.is_empty())
+    {
         vec.push((String::new(), String::new()));
     }
 }

@@ -1,9 +1,11 @@
+use crate::app::App;
+use crate::widgets::{
+    body, footer, headers, method, params, popup, response_body, response_headers, url,
+};
 use ratatui::{
     layout::{Constraint, Direction, Layout},
     Frame,
 };
-use crate::app::App;
-use crate::widgets::{method, url, headers, params, body, response_headers, response_body, footer, popup};
 
 pub fn draw_ui(frame: &mut Frame, app: &mut App) {
     let chunks = Layout::default()
@@ -17,18 +19,12 @@ pub fn draw_ui(frame: &mut Frame, app: &mut App) {
 
     let upper_chunks = Layout::default()
         .direction(Direction::Horizontal)
-        .constraints([
-            Constraint::Max(20),
-            Constraint::Min(10),
-        ])
+        .constraints([Constraint::Max(20), Constraint::Min(10)])
         .split(chunks[0]);
 
     let lower_chunks = Layout::default()
         .direction(Direction::Horizontal)
-        .constraints([
-            Constraint::Percentage(40),
-            Constraint::Percentage(60),
-        ])
+        .constraints([Constraint::Percentage(40), Constraint::Percentage(60)])
         .split(chunks[1]);
 
     let left_chunks = Layout::default()
@@ -42,10 +38,7 @@ pub fn draw_ui(frame: &mut Frame, app: &mut App) {
 
     let right_chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Percentage(25),
-            Constraint::Percentage(75),
-        ])
+        .constraints([Constraint::Percentage(25), Constraint::Percentage(75)])
         .split(lower_chunks[1]);
 
     method::draw(frame, upper_chunks[0], app);
@@ -59,4 +52,3 @@ pub fn draw_ui(frame: &mut Frame, app: &mut App) {
 
     popup::draw(frame, app);
 }
-

@@ -1,20 +1,20 @@
 mod app;
-mod ui;
 mod event;
-mod widgets;
+mod ui;
 mod utils;
+mod widgets;
 
 use crate::app::{App, ResponseData};
-use ratatui::backend::CrosstermBackend;
-use ratatui::Terminal;
 use crossterm::{
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
+use ratatui::backend::CrosstermBackend;
+use ratatui::Terminal;
 use reqwest::Method;
 use std::io::stderr;
-use tokio::sync::mpsc;
 use structopt::StructOpt;
+use tokio::sync::mpsc;
 
 #[derive(StructOpt, Debug)]
 #[structopt(name = "turl", about = "TUI HTTP client.")]
@@ -36,17 +36,6 @@ struct Opt {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let opt = Opt::from_args();
 
-    // logger初期化
-    let log_file = std::sync::Arc::new(std::fs::File::create("./log.log").unwrap());
-    tracing_subscriber::fmt()
-        .with_max_level(tracing::Level::DEBUG)
-        .with_file(true) // default=false
-        .with_line_number(true) // default=false
-        .with_ansi(true)
-        .with_writer(log_file)
-        .init();
-    tracing::debug!("start turl");
-
     enable_raw_mode()?;
     let mut stderr = stderr();
     execute!(stderr, EnterAlternateScreen)?;
@@ -54,7 +43,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut terminal = Terminal::new(backend)?;
 
     let mut app = App::new();
-    let methods = vec![Method::GET, Method::POST, Method::PUT, Method::PATCH, Method::DELETE, Method::TRACE, Method::OPTIONS]; 
+    let methods = vec![
+        Method::GET,
+        Method::POST,
+        Method::PUT,
+        Method::PATCH,
+        Method::DELETE,
+        Method::TRACE,
+        Method::OPTIONS,
+    ];
 
     // 非同期でレスポンスを受け取るためのチャンネル
     let (tx, mut rx) = mpsc::channel::<ResponseData>(1);
@@ -69,7 +66,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // レスポンスを受け取った場合に表示
         if let Ok(response) = rx.try_recv() {
-                app.response = response;
+            app.response = response;
         }
     }
 
@@ -87,6 +84,5 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("{}", app.format_stdout_body()?);
     }
 
-    tracing::debug!("start end");
     Ok(())
 }

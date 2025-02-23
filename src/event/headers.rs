@@ -1,13 +1,13 @@
 use crate::app::{App, Focus, PopupFocusState, PopupState};
 use crossterm::event::KeyCode;
-use tui_textarea::TextArea;
 use std::io;
+use tui_textarea::TextArea;
 
 pub fn handle_events(app: &mut App, code: KeyCode) -> io::Result<bool> {
     match code {
         KeyCode::Down => {
             if app.selected_index < app.headers.len() - 1 {
-                app.selected_index = app.selected_index + 1;
+                app.selected_index += 1;
             } else {
                 app.selected_index = 0;
             }
@@ -15,7 +15,7 @@ pub fn handle_events(app: &mut App, code: KeyCode) -> io::Result<bool> {
         }
         KeyCode::Up => {
             if 0 < app.selected_index {
-                app.selected_index = app.selected_index - 1;
+                app.selected_index -= 1;
             } else {
                 app.selected_index = app.headers.len() - 1;
             }

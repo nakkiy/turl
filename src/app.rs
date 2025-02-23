@@ -1,7 +1,7 @@
-use reqwest::{Client, Method};
-use tokio::sync::mpsc;
 use ratatui::widgets::ListState;
+use reqwest::{Client, Method};
 use std::fmt::Write;
+use tokio::sync::mpsc;
 use tui_textarea::TextArea;
 
 #[derive(Clone)]
@@ -76,11 +76,7 @@ impl App {
         Self {
             url: TextArea::default(),
             method: Method::GET,
-            headers: vec![
-                ("Content-Type".to_string(), "application/json".to_string()),
-                ("hoge".to_string(), "huga".to_string()),
-                ("".to_string(), "".to_string()),
-            ],
+            headers: vec![("".to_string(), "".to_string())],
             params: vec![("".to_string(), "".to_string())],
             body: TextArea::default(),
             response: ResponseData {
@@ -106,10 +102,11 @@ impl App {
 
     pub async fn send_request(&mut self, tx: mpsc::Sender<ResponseData>) {
         let client = Client::new();
-        let mut req = client.request(self.method.clone(), &self.url.lines().concat());
+        let mut req = client.request(self.method.clone(), self.url.lines().concat());
 
         // クエリパラメータを設定
-        let params: Vec<(&str, &str)> = self.params
+        let params: Vec<(&str, &str)> = self
+            .params
             .iter()
             .filter(|(k, _)| !k.is_empty()) // 空キーは無視
             .map(|(k, v)| (k.as_str(), v.as_str()))
@@ -142,15 +139,23 @@ impl App {
         // リクエスト送信
         match req.send().await {
             Ok(res) => {
-                tracing::debug!("status + {:?}", res.status());
                 let status = res.status().to_string();
-                let headers = res.headers()
+                let headers = res
+                    .headers()
                     .iter()
                     .map(|(k, v)| (k.to_string(), v.to_str().unwrap_or("").to_string()))
                     .collect();
-                let body = res.text().await.unwrap_or_else(|_| "Failed to read response body".to_string()).replace("\t", "    ");
+                let body = res
+                    .text()
+                    .await
+                    .unwrap_or_else(|_| "Failed to read response body".to_string())
+                    .replace("\t", "    ");
 
-                let response_data = ResponseData { status, headers, body };
+                let response_data = ResponseData {
+                    status,
+                    headers,
+                    body,
+                };
                 let _ = tx.send(response_data).await;
             }
             Err(err) => {

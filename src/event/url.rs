@@ -9,8 +9,9 @@ pub fn handle_events(app: &mut App, input: Input) -> io::Result<bool> {
                 app.focus = Focus::None;
             }
         }
-        Input { key: Key::Enter, .. } => {
-        }
+        Input {
+            key: Key::Enter, ..
+        } => {}
         input => {
             app.url.input(input);
         }
