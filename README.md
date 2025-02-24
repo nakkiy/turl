@@ -9,13 +9,13 @@
 ```sh
 git clone https://github.com/nakkiy/turl.git
 cd turl
-cargo run
+cargo build
 ```
 
 ## 使用方法
 `turl`を実行するには、以下のコマンドを使用します。
 ```sh
-turl
+cargo run
 ```
 
 ## オプション
