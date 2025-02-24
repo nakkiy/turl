@@ -23,7 +23,8 @@ pub fn centered_rect(percent_x: u16, percent_y: u16, r: Rect) -> Rect {
         .split(popup_layout[1])[1]
 }
 
-pub fn add_empty(vec: &mut Vec<(String, String)>) {
+pub fn clean_up_list(vec: &mut Vec<(String, String)>) {
+    vec.retain(|(key, value)| !(key.is_empty() && value.is_empty()));
     if vec
         .last()
         .map_or(true, |(k, v)| !k.is_empty() || !v.is_empty())

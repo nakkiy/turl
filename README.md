@@ -9,7 +9,7 @@
 ```sh
 git clone https://github.com/nakkiy/turl.git
 cd turl
-cargo install --path .
+cargo run
 ```
 
 ## 使用方法

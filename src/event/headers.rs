@@ -1,10 +1,23 @@
-use crate::app::{App, Focus, PopupFocusState, PopupState};
-use crossterm::event::KeyCode;
+use crate::{
+    app::{App, Focus, PopupFocusState, PopupState},
+    utils,
+};
+use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use std::io;
 use tui_textarea::TextArea;
 
-pub fn handle_events(app: &mut App, code: KeyCode) -> io::Result<bool> {
-    match code {
+pub fn handle_events(app: &mut App, key_event: KeyEvent) -> io::Result<bool> {
+    match key_event.modifiers {
+        KeyModifiers::CONTROL => match key_event.code {
+            KeyCode::Char('d') => {
+                app.headers.remove(app.selected_index);
+                utils::clean_up_list(&mut app.headers);
+            }
+            _ => {}
+        },
+        _ => {}
+    }
+    match key_event.code {
         KeyCode::Down => {
             if app.selected_index < app.headers.len() - 1 {
                 app.selected_index += 1;

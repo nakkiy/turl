@@ -110,10 +110,10 @@ pub async fn handle_events(
                     return crate::event::url::handle_events(app, key_event.into());
                 }
                 Focus::Headers => {
-                    return crate::event::headers::handle_events(app, key_event.code);
+                    return crate::event::headers::handle_events(app, key_event);
                 }
                 Focus::Params => {
-                    return crate::event::params::handle_events(app, key_event.code);
+                    return crate::event::params::handle_events(app, key_event);
                 }
                 Focus::Body => {
                     return crate::event::body::handle_events(app, key_event.into());
@@ -122,7 +122,7 @@ pub async fn handle_events(
                     return crate::event::response_headers::handle_events(app, key_event.code);
                 }
                 Focus::Popup => {
-                    return crate::event::popup::handle_events(app, key_event.into());
+                    return crate::event::popup::handle_events(app, key_event);
                 }
                 _ => {}
             }
