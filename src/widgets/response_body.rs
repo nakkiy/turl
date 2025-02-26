@@ -2,12 +2,12 @@ use crate::app::{App, Focus};
 use ratatui::{
     layout::Rect,
     prelude::{Line, Span},
-    style::{Color, Style},
-    widgets::{Block, Borders, Paragraph},
+    style::{Color, Modifier, Style},
+    widgets::{Block, Borders},
     Frame,
 };
 
-pub fn draw(f: &mut Frame, area: Rect, app: &App) {
+pub fn draw(f: &mut Frame, area: Rect, app: &mut App) {
     let response_title = Line::from(vec![
         Span::raw("Response Body"),
         Span::raw(if !app.response.status.is_empty() {
@@ -28,7 +28,20 @@ pub fn draw(f: &mut Frame, area: Rect, app: &App) {
             },
         ),
     ]);
-    let block = Paragraph::new(app.response.body.as_str()).block(
+
+    app.response
+        .body
+        .set_cursor_style(if app.focus == Focus::ResponseBody {
+            Style::default().add_modifier(Modifier::REVERSED)
+        } else {
+            Style::default()
+        });
+
+    app.response
+        .body
+        .set_line_number_style(Style::default().fg(Color::DarkGray));
+
+    app.response.body.set_block(
         Block::default()
             .borders(Borders::ALL)
             .title(response_title)
@@ -43,5 +56,6 @@ pub fn draw(f: &mut Frame, area: Rect, app: &App) {
                 Color::DarkGray
             })),
     );
-    f.render_widget(block, area);
+
+    f.render_widget(&app.response.body, area);
 }
