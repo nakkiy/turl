@@ -8,7 +8,7 @@ use tui_textarea::TextArea;
 pub struct ResponseData {
     pub status: String,
     pub headers: Vec<(String, String)>,
-    pub body: String,
+    pub body: TextArea<'static>,
 }
 
 #[derive(Clone)]
@@ -82,7 +82,7 @@ impl App {
             response: ResponseData {
                 status: "".to_string(),
                 headers: vec![],
-                body: "".to_string(),
+                body: TextArea::default(),
             },
             focus: Focus::None,
             selected_index: 0,
@@ -132,7 +132,7 @@ impl App {
         let response_data = ResponseData {
             status: "".to_string(),
             headers: vec![],
-            body: "Sending request...".to_string(),
+            body: TextArea::from_iter("Sending request...".to_string().lines().map(String::from)),
         };
         let _ = tx.send(response_data).await;
 
@@ -150,6 +150,7 @@ impl App {
                     .await
                     .unwrap_or_else(|_| "Failed to read response body".to_string())
                     .replace("\t", "    ");
+                let body = TextArea::from_iter(body.lines().map(|s| s.to_string()));
 
                 let response_data = ResponseData {
                     status,
@@ -162,7 +163,11 @@ impl App {
                 let response_data = ResponseData {
                     status: "".to_string(),
                     headers: vec![],
-                    body: format!("Request failed:\n    {}", err),
+                    body: TextArea::from_iter(
+                        format!("Request failed:\n    {}", err)
+                            .lines()
+                            .map(String::from),
+                    ),
                 };
                 let _ = tx.send(response_data).await;
             }
@@ -185,7 +190,7 @@ impl App {
 
     pub fn format_stdout_body(&self) -> Result<String, std::fmt::Error> {
         let mut result = String::new();
-        writeln!(&mut result, "{}", &self.response.body)?;
+        writeln!(&mut result, "{}", &self.response.body.lines().join("\n"))?;
         Ok(result)
     }
 }

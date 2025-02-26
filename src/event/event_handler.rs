@@ -121,6 +121,9 @@ pub async fn handle_events(
                 Focus::ResponseHeaders => {
                     return crate::event::response_headers::handle_events(app, key_event.code);
                 }
+                Focus::ResponseBody => {
+                    return crate::event::response_body::handle_events(app, key_event.into());
+                }
                 Focus::Popup => {
                     return crate::event::popup::handle_events(app, key_event);
                 }
