@@ -9,6 +9,7 @@ use ratatui::{
 
 pub fn draw(f: &mut Frame, area: Rect, app: &mut App) {
     let headers_items: Vec<ListItem> = app
+        .request
         .params
         .iter()
         .enumerate()

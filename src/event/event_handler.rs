@@ -19,10 +19,23 @@ pub async fn handle_events(
                         tokio::spawn(async move {
                             app_clone.send_request(tx).await;
                         });
+                        app.history.add(app.request.clone());
                         return Ok(false);
                     }
                     KeyCode::Char('q') => {
                         return Ok(true);
+                    }
+                    KeyCode::Up => {
+                        if let Some(request) = app.history.prev().get_current() {
+                            app.request = request.clone();
+                            return Ok(false);
+                        }
+                    }
+                    KeyCode::Down => {
+                        if let Some(request) = app.history.next().get_current() {
+                            app.request = request.clone();
+                            return Ok(false);
+                        }
                     }
                     _ => {}
                 },

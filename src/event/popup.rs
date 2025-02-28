@@ -45,18 +45,18 @@ pub fn handle_events(app: &mut App, key_event: KeyEvent) -> io::Result<bool> {
         } => {
             if app.popup.state == PopupState::Headers {
                 app.focus = Focus::Headers;
-                app.headers[app.selected_index] = (
+                app.request.headers[app.selected_index] = (
                     app.popup.key.lines().concat(),
                     app.popup.value.lines().concat(),
                 );
-                utils::clean_up_list(&mut app.headers);
+                utils::clean_up_list(&mut app.request.headers);
             } else if app.popup.state == PopupState::Params {
                 app.focus = Focus::Params;
-                app.params[app.selected_index] = (
+                app.request.params[app.selected_index] = (
                     app.popup.key.lines().concat(),
                     app.popup.value.lines().concat(),
                 );
-                utils::clean_up_list(&mut app.params);
+                utils::clean_up_list(&mut app.request.params);
             } else {
                 app.focus = Focus::None;
             };
