@@ -7,13 +7,15 @@ use ratatui::{
 };
 
 pub fn draw(f: &mut Frame, area: Rect, app: &mut App) {
-    app.body.set_cursor_style(if app.focus == Focus::Body {
-        Style::default().add_modifier(Modifier::REVERSED)
-    } else {
-        Style::default()
-    });
+    app.request
+        .body
+        .set_cursor_style(if app.focus == Focus::Body {
+            Style::default().add_modifier(Modifier::REVERSED)
+        } else {
+            Style::default()
+        });
 
-    app.body.set_block(
+    app.request.body.set_block(
         Block::default()
             .borders(Borders::ALL)
             .title("Body")
@@ -28,5 +30,5 @@ pub fn draw(f: &mut Frame, area: Rect, app: &mut App) {
                 Color::DarkGray
             })),
     );
-    f.render_widget(&app.body, area);
+    f.render_widget(&app.request.body, area);
 }

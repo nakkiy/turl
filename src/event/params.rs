@@ -10,8 +10,8 @@ pub fn handle_events(app: &mut App, key_event: KeyEvent) -> io::Result<bool> {
     match key_event.modifiers {
         KeyModifiers::CONTROL => match key_event.code {
             KeyCode::Char('d') => {
-                app.params.remove(app.selected_index);
-                utils::clean_up_list(&mut app.params);
+                app.request.params.remove(app.selected_index);
+                utils::clean_up_list(&mut app.request.params);
             }
             _ => {}
         },
@@ -19,7 +19,7 @@ pub fn handle_events(app: &mut App, key_event: KeyEvent) -> io::Result<bool> {
     }
     match key_event.code {
         KeyCode::Down => {
-            if app.selected_index < app.params.len() - 1 {
+            if app.selected_index < app.request.params.len() - 1 {
                 app.selected_index += 1;
             } else {
                 app.selected_index = 0;
@@ -30,15 +30,17 @@ pub fn handle_events(app: &mut App, key_event: KeyEvent) -> io::Result<bool> {
             if 0 < app.selected_index {
                 app.selected_index -= 1;
             } else {
-                app.selected_index = app.params.len() - 1;
+                app.selected_index = app.request.params.len() - 1;
             }
             app.list_states.params.select(Some(app.selected_index));
         }
         KeyCode::Enter => {
             app.focus = Focus::Popup;
             app.popup.state = PopupState::Params;
-            app.popup.key = TextArea::new(vec![app.params[app.selected_index].0.to_string()]);
-            app.popup.value = TextArea::new(vec![app.params[app.selected_index].1.to_string()]);
+            app.popup.key =
+                TextArea::new(vec![app.request.params[app.selected_index].0.to_string()]);
+            app.popup.value =
+                TextArea::new(vec![app.request.params[app.selected_index].1.to_string()]);
             app.popup.focus = PopupFocusState::Key;
         }
         KeyCode::Esc => {

@@ -7,7 +7,7 @@ use ratatui::{
 };
 
 pub fn draw(f: &mut Frame, area: Rect, app: &App) {
-    let block = Paragraph::new(app.method.as_str()).block(
+    let block = Paragraph::new(app.request.method.as_str()).block(
         Block::default()
             .borders(Borders::ALL)
             .title("Method")

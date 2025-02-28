@@ -10,7 +10,7 @@ pub fn handle_events(app: &mut App, input: Input) -> io::Result<bool> {
             }
         }
         input => {
-            app.body.input(input);
+            app.request.body.input(input);
         }
     }
     Ok(false)
