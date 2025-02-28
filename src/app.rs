@@ -4,6 +4,8 @@ use std::fmt::Write;
 use tokio::sync::mpsc;
 use tui_textarea::TextArea;
 
+use crate::history::History;
+
 #[derive(Clone)]
 pub struct ResponseData {
     pub status: String,
@@ -52,17 +54,23 @@ pub struct Popup {
 }
 
 #[derive(Clone)]
-pub struct App {
+pub struct RequestData {
     pub url: TextArea<'static>,
     pub method: Method,
     pub headers: Vec<(String, String)>,
     pub params: Vec<(String, String)>,
     pub body: TextArea<'static>,
+}
+
+#[derive(Clone)]
+pub struct App {
+    pub request: RequestData,
     pub response: ResponseData,
     pub focus: Focus,
     pub selected_index: usize,
     pub list_states: ListStates,
     pub popup: Popup,
+    pub history: History,
 }
 
 impl App {
@@ -74,11 +82,13 @@ impl App {
         let mut response_header_list_state = ListState::default();
         response_header_list_state.select(Some(0));
         Self {
-            url: TextArea::default(),
-            method: Method::GET,
-            headers: vec![("".to_string(), "".to_string())],
-            params: vec![("".to_string(), "".to_string())],
-            body: TextArea::default(),
+            request: RequestData {
+                url: TextArea::default(),
+                method: Method::GET,
+                headers: vec![("".to_string(), "".to_string())],
+                params: vec![("".to_string(), "".to_string())],
+                body: TextArea::default(),
+            },
             response: ResponseData {
                 status: "".to_string(),
                 headers: vec![],
@@ -97,15 +107,20 @@ impl App {
                 value: TextArea::default(),
                 focus: PopupFocusState::Key,
             },
+            history: History::new(100),
         }
     }
 
     pub async fn send_request(&mut self, tx: mpsc::Sender<ResponseData>) {
         let client = Client::new();
-        let mut req = client.request(self.method.clone(), self.url.lines().concat());
+        let mut req = client.request(
+            self.request.method.clone(),
+            self.request.url.lines().concat(),
+        );
 
         // クエリパラメータを設定
         let params: Vec<(&str, &str)> = self
+            .request
             .params
             .iter()
             .filter(|(k, _)| !k.is_empty()) // 空キーは無視
@@ -117,7 +132,7 @@ impl App {
 
         // ヘッダーを設定
         req = req.header("User-Agent", format!("TURL/{}", env!("CARGO_PKG_VERSION")));
-        for (key, value) in &self.headers {
+        for (key, value) in &self.request.headers {
             if key.is_empty() {
                 continue;
             }
@@ -125,8 +140,8 @@ impl App {
         }
 
         // ボディを設定（POST, PUT の場合）
-        if self.method == Method::POST || self.method == Method::PUT {
-            req = req.body(self.body.lines().concat());
+        if self.request.method == Method::POST || self.request.method == Method::PUT {
+            req = req.body(self.request.body.lines().concat());
         }
 
         let response_data = ResponseData {

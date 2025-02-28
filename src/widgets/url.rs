@@ -7,15 +7,18 @@ use ratatui::{
 };
 
 pub fn draw(f: &mut Frame, area: Rect, app: &mut App) {
-    app.url.set_cursor_style(if app.focus == Focus::Url {
-        Style::default().add_modifier(Modifier::REVERSED)
-    } else {
-        Style::default()
-    });
-    app.url
+    app.request
+        .url
+        .set_cursor_style(if app.focus == Focus::Url {
+            Style::default().add_modifier(Modifier::REVERSED)
+        } else {
+            Style::default()
+        });
+    app.request
+        .url
         .set_placeholder_text("Enter a URL (e.g. https://httpbin.org/get)");
 
-    app.url.set_block(
+    app.request.url.set_block(
         Block::default()
             .borders(Borders::ALL)
             .title("URL")
@@ -30,5 +33,5 @@ pub fn draw(f: &mut Frame, area: Rect, app: &mut App) {
                 Color::DarkGray
             })),
     );
-    f.render_widget(&app.url, area);
+    f.render_widget(&app.request.url, area);
 }

@@ -13,7 +13,7 @@ pub fn handle_events(app: &mut App, input: Input) -> io::Result<bool> {
             key: Key::Enter, ..
         } => {}
         input => {
-            app.url.input(input);
+            app.request.url.input(input);
         }
     }
     Ok(false)
