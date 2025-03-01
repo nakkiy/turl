@@ -1,11 +1,11 @@
-use crate::app::{App, Focus};
+use crate::application::{app::App, ui_state::Focus};
 use crossterm::event::KeyCode;
 use reqwest::Method;
 use std::io;
 
 pub fn handle_events(app: &mut App, methods: &[Method], code: KeyCode) -> io::Result<bool> {
     match code {
-        KeyCode::Left | KeyCode::Right if app.focus == Focus::Method => {
+        KeyCode::Left | KeyCode::Right if app.ui.focus == Focus::Method => {
             let index = methods
                 .iter()
                 .position(|m| m == app.request.method)
@@ -20,8 +20,8 @@ pub fn handle_events(app: &mut App, methods: &[Method], code: KeyCode) -> io::Re
             .clone();
         }
         KeyCode::Esc => {
-            if app.focus != Focus::None {
-                app.focus = Focus::None;
+            if app.ui.focus != Focus::None {
+                app.ui.focus = Focus::None;
             }
         }
         _ => {}

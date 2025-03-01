@@ -6,4 +6,5 @@ pub mod params;
 pub mod popup;
 pub mod response_body;
 pub mod response_headers;
+pub mod ui;
 pub mod url;

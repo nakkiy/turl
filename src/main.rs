@@ -1,11 +1,10 @@
-mod app;
+mod application;
 mod event;
-mod history;
-mod ui;
 mod utils;
 mod widgets;
 
-use crate::app::{App, ResponseData};
+use crate::application::{app::App, response_data::ResponseData};
+use crate::widgets::ui;
 use crossterm::{
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},

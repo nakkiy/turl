@@ -1,4 +1,4 @@
-use crate::app::App;
+use crate::application::app::App;
 use crate::widgets::{
     body, footer, headers, method, params, popup, response_body, response_headers, url,
 };
