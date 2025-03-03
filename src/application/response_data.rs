@@ -83,10 +83,15 @@ impl ResponseData {
         let body_text = res
             .text()
             .await
-            .unwrap_or_else(|_| "Failed to read response body".to_string()) // 取得に失敗した場合のデフォルト値
-            .replace("\t", "    "); // タブをスペースに変換（整形しやすくするため）
+            .unwrap_or_else(|_| "Failed to read response body".to_string()); // 取得に失敗した場合のデフォルト値
 
-        TextArea::from_iter(body_text.lines().map(|s| s.to_string())) // 各行を `TextArea` にセット
+        // JSON の場合は整形してセット
+        let formatted_text = match serde_json::from_str::<serde_json::Value>(&body_text) {
+            Ok(json_value) => serde_json::to_string_pretty(&json_value).unwrap_or(body_text), // 整形成功なら整形後のJSON
+            Err(_) => body_text, // 失敗時はそのまま表示
+        };
+
+        TextArea::from_iter(formatted_text.lines().map(|s| s.to_string())) // 各行を `TextArea` にセット
     }
 
     /// エラーメッセージをフォーマットし、`TextArea` に格納
