@@ -1,4 +1,5 @@
-use crate::app::{App, Focus};
+use crate::application::app::App;
+use crate::application::ui_state::Focus;
 use ratatui::text::{Line, Span};
 use ratatui::{
     layout::Rect,
@@ -14,7 +15,7 @@ pub fn draw(f: &mut Frame, area: Rect, app: &mut App) {
         .iter()
         .enumerate()
         .map(|(i, (k, v))| {
-            let is_selected = app.focus == Focus::Params && i == app.selected_index;
+            let is_selected = app.ui.focus == Focus::Params && i == app.ui.selected_index;
             let style = if is_selected {
                 Style::default().fg(Color::Black).bg(Color::LightBlue) // 選択時の色
             } else {
@@ -40,17 +41,17 @@ pub fn draw(f: &mut Frame, area: Rect, app: &mut App) {
         Block::default()
             .title("Params")
             .borders(Borders::ALL)
-            .title_style(Style::default().fg(if app.focus == Focus::Params {
+            .title_style(Style::default().fg(if app.ui.focus == Focus::Params {
                 Color::Green
             } else {
                 Color::default()
             }))
-            .border_style(Style::default().fg(if app.focus == Focus::Params {
+            .border_style(Style::default().fg(if app.ui.focus == Focus::Params {
                 Color::Green
             } else {
                 Color::DarkGray
             })),
     );
 
-    f.render_stateful_widget(list, area, &mut app.list_states.params);
+    f.render_stateful_widget(list, area, &mut app.ui.list_states.params);
 }

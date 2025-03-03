@@ -1,4 +1,8 @@
-use crate::app::{App, Focus, PopupState, ResponseData};
+use crate::application::{
+    app::App,
+    response_data::ResponseData,
+    ui_state::{Focus, PopupState},
+};
 use crossterm::event::{self, KeyCode, KeyModifiers};
 use reqwest::Method;
 use std::io;
@@ -42,32 +46,32 @@ pub async fn handle_events(
                 KeyModifiers::ALT => {
                     match key_event.code {
                         KeyCode::Char('m') => {
-                            app.selected_index = 0;
-                            app.focus = Focus::Method;
+                            app.ui.selected_index = 0;
+                            app.ui.focus = Focus::Method;
                         }
                         KeyCode::Char('u') => {
-                            app.selected_index = 0;
-                            app.focus = Focus::Url;
+                            app.ui.selected_index = 0;
+                            app.ui.focus = Focus::Url;
                         }
                         KeyCode::Char('h') => {
-                            app.selected_index = 0;
-                            app.focus = Focus::Headers;
+                            app.ui.selected_index = 0;
+                            app.ui.focus = Focus::Headers;
                         }
                         KeyCode::Char('p') => {
-                            app.selected_index = 0;
-                            app.focus = Focus::Params;
+                            app.ui.selected_index = 0;
+                            app.ui.focus = Focus::Params;
                         }
                         KeyCode::Char('b') => {
-                            app.selected_index = 0;
-                            app.focus = Focus::Body;
+                            app.ui.selected_index = 0;
+                            app.ui.focus = Focus::Body;
                         }
                         KeyCode::Char('e') => {
-                            app.selected_index = 0;
-                            app.focus = Focus::ResponseHeaders;
+                            app.ui.selected_index = 0;
+                            app.ui.focus = Focus::ResponseHeaders;
                         }
                         KeyCode::Char('r') => {
-                            app.selected_index = 0;
-                            app.focus = Focus::ResponseBody;
+                            app.ui.selected_index = 0;
+                            app.ui.focus = Focus::ResponseBody;
                         }
                         _ => {}
                     }
@@ -75,9 +79,9 @@ pub async fn handle_events(
                 }
                 KeyModifiers::SHIFT => match key_event.code {
                     KeyCode::BackTab => {
-                        if app.popup.state == PopupState::None {
-                            app.selected_index = 0;
-                            app.focus = match app.focus {
+                        if app.ui.popup.state == PopupState::None {
+                            app.ui.selected_index = 0;
+                            app.ui.focus = match app.ui.focus {
                                 Focus::Method => Focus::ResponseBody,
                                 Focus::ResponseBody => Focus::ResponseHeaders,
                                 Focus::ResponseHeaders => Focus::Body,
@@ -95,9 +99,9 @@ pub async fn handle_events(
                 },
                 KeyModifiers::NONE => match key_event.code {
                     KeyCode::Tab => {
-                        if app.popup.state == PopupState::None {
-                            app.selected_index = 0;
-                            app.focus = match app.focus {
+                        if app.ui.popup.state == PopupState::None {
+                            app.ui.selected_index = 0;
+                            app.ui.focus = match app.ui.focus {
                                 Focus::Method => Focus::Url,
                                 Focus::Url => Focus::Headers,
                                 Focus::Headers => Focus::Params,
@@ -115,7 +119,7 @@ pub async fn handle_events(
                 },
                 _ => {}
             }
-            match app.focus {
+            match app.ui.focus {
                 Focus::Method => {
                     return crate::event::method::handle_events(app, methods, key_event.code);
                 }

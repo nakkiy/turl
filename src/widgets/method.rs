@@ -1,4 +1,4 @@
-use crate::app::{App, Focus};
+use crate::application::{app::App, ui_state::Focus};
 use ratatui::{
     layout::Rect,
     style::{Color, Style},
@@ -11,12 +11,12 @@ pub fn draw(f: &mut Frame, area: Rect, app: &App) {
         Block::default()
             .borders(Borders::ALL)
             .title("Method")
-            .title_style(Style::default().fg(if app.focus == Focus::Method {
+            .title_style(Style::default().fg(if app.ui.focus == Focus::Method {
                 Color::Green
             } else {
                 Color::default()
             }))
-            .border_style(Style::default().fg(if app.focus == Focus::Method {
+            .border_style(Style::default().fg(if app.ui.focus == Focus::Method {
                 Color::Green
             } else {
                 Color::DarkGray
