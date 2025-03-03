@@ -1,4 +1,4 @@
-use crate::app::{App, Focus};
+use crate::application::{app::App, ui_state::Focus};
 use ratatui::{
     layout::Rect,
     prelude::{Line, Span},
@@ -8,11 +8,11 @@ use ratatui::{
 };
 
 pub fn draw(f: &mut Frame, area: Rect, app: &App) {
-    let block = Paragraph::new(match app.focus {
+    let block = Paragraph::new(match app.ui.focus {
         Focus::Method => Line::from(vec![
             Span::styled("← /→ ", Style::default().fg(Color::LightBlue)),
             Span::raw(":switch methods "),
-            Span::styled("^↑ /^↑ ", Style::default().fg(Color::LightBlue)),
+            Span::styled("^↑ /^↓ ", Style::default().fg(Color::LightBlue)),
             Span::raw(":previous/next history "),
             Span::styled("^J", Style::default().fg(Color::LightBlue)),
             Span::raw(":Send "),
@@ -20,7 +20,7 @@ pub fn draw(f: &mut Frame, area: Rect, app: &App) {
             Span::raw(":Quit"),
         ]),
         Focus::Url => Line::from(vec![
-            Span::styled("^↑ /^↑ ", Style::default().fg(Color::LightBlue)),
+            Span::styled("^↑ /^↓ ", Style::default().fg(Color::LightBlue)),
             Span::raw(":previous/next history "),
             Span::styled("^J", Style::default().fg(Color::LightBlue)),
             Span::raw(":Send "),
@@ -32,7 +32,7 @@ pub fn draw(f: &mut Frame, area: Rect, app: &App) {
             Span::raw(":Delete "),
             Span::styled("Enter", Style::default().fg(Color::LightBlue)),
             Span::raw(":Edit "),
-            Span::styled("^↑ /^↑ ", Style::default().fg(Color::LightBlue)),
+            Span::styled("^↑ /^↓ ", Style::default().fg(Color::LightBlue)),
             Span::raw(":previous/next history "),
             Span::styled("^J", Style::default().fg(Color::LightBlue)),
             Span::raw(":Send "),
@@ -44,7 +44,7 @@ pub fn draw(f: &mut Frame, area: Rect, app: &App) {
             Span::raw(":Delete "),
             Span::styled("Enter", Style::default().fg(Color::LightBlue)),
             Span::raw(":Edit "),
-            Span::styled("^↑ /^↑ ", Style::default().fg(Color::LightBlue)),
+            Span::styled("^↑ /^↓ ", Style::default().fg(Color::LightBlue)),
             Span::raw(":previous/next history "),
             Span::styled("^J", Style::default().fg(Color::LightBlue)),
             Span::raw(":Send "),
@@ -52,7 +52,7 @@ pub fn draw(f: &mut Frame, area: Rect, app: &App) {
             Span::raw(":Quit"),
         ]),
         Focus::Body => Line::from(vec![
-            Span::styled("^↑ /^↑ ", Style::default().fg(Color::LightBlue)),
+            Span::styled("^↑ /^↓ ", Style::default().fg(Color::LightBlue)),
             Span::raw(":previous/next history "),
             Span::styled("^J", Style::default().fg(Color::LightBlue)),
             Span::raw(":Send "),
@@ -60,7 +60,7 @@ pub fn draw(f: &mut Frame, area: Rect, app: &App) {
             Span::raw(":Quit"),
         ]),
         Focus::ResponseHeaders => Line::from(vec![
-            Span::styled("^↑ /^↑ ", Style::default().fg(Color::LightBlue)),
+            Span::styled("^↑ /^↓ ", Style::default().fg(Color::LightBlue)),
             Span::raw(":previous/next history "),
             Span::styled("^J", Style::default().fg(Color::LightBlue)),
             Span::raw(":Send "),
@@ -68,7 +68,7 @@ pub fn draw(f: &mut Frame, area: Rect, app: &App) {
             Span::raw(":Quit"),
         ]),
         Focus::ResponseBody => Line::from(vec![
-            Span::styled("^↑ /^↑ ", Style::default().fg(Color::LightBlue)),
+            Span::styled("^↑ /^↓ ", Style::default().fg(Color::LightBlue)),
             Span::raw(":previous/next history "),
             Span::styled("^J", Style::default().fg(Color::LightBlue)),
             Span::raw(":Send "),
@@ -88,7 +88,7 @@ pub fn draw(f: &mut Frame, area: Rect, app: &App) {
             Span::raw(":Response Header "),
             Span::styled("alt+R", Style::default().fg(Color::LightBlue)),
             Span::raw(":Response "),
-            Span::styled("^↑ /^↑ ", Style::default().fg(Color::LightBlue)),
+            Span::styled("^↑ /^↓ ", Style::default().fg(Color::LightBlue)),
             Span::raw(":previous/next history "),
             Span::styled("^J", Style::default().fg(Color::LightBlue)),
             Span::raw(":Send "),

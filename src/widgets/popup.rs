@@ -1,4 +1,5 @@
-use crate::app::{App, PopupFocusState, PopupState};
+use crate::application::ui_state::PopupState;
+use crate::application::{app::App, ui_state::PopupFocusState};
 use crate::utils;
 use ratatui::{
     layout::{Constraint, Direction, Layout},
@@ -8,14 +9,14 @@ use ratatui::{
 };
 
 pub fn draw(f: &mut Frame, app: &mut App) {
-    if app.popup.state != PopupState::None {
+    if app.ui.popup.state != PopupState::None {
         let area = utils::centered_rect(50, 25, f.area());
         let popup = Block::default()
             .borders(Borders::ALL)
             .border_style(Style::default().fg(Color::Green))
-            .title(if app.popup.state == PopupState::Headers {
+            .title(if app.ui.popup.state == PopupState::Headers {
                 "Header"
-            } else if app.popup.state == PopupState::Params {
+            } else if app.ui.popup.state == PopupState::Params {
                 "Param"
             } else {
                 ""
@@ -35,79 +36,83 @@ pub fn draw(f: &mut Frame, app: &mut App) {
             ])
             .split(area);
 
-        app.popup
+        app.ui
+            .popup
             .key
-            .set_placeholder_text(if app.popup.state == PopupState::Headers {
+            .set_placeholder_text(if app.ui.popup.state == PopupState::Headers {
                 "Enter a key (e.g. Content-Type)"
-            } else if app.popup.state == PopupState::Params {
+            } else if app.ui.popup.state == PopupState::Params {
                 "Enter a key"
             } else {
                 ""
             });
-        app.popup.key.set_block(
+        app.ui.popup.key.set_block(
             Block::default()
                 .borders(Borders::ALL)
                 .title("Key")
                 .title_style(
-                    Style::default().fg(if app.popup.focus == PopupFocusState::Key {
+                    Style::default().fg(if app.ui.popup.focus == PopupFocusState::Key {
                         Color::Green
                     } else {
                         Color::default()
                     }),
                 )
                 .border_style(
-                    Style::default().fg(if app.popup.focus == PopupFocusState::Key {
+                    Style::default().fg(if app.ui.popup.focus == PopupFocusState::Key {
                         Color::Green
                     } else {
                         Color::DarkGray
                     }),
                 ),
         );
-        app.popup
+        app.ui
+            .popup
             .key
-            .set_cursor_style(if app.popup.focus == PopupFocusState::Key {
+            .set_cursor_style(if app.ui.popup.focus == PopupFocusState::Key {
                 Style::default().add_modifier(Modifier::REVERSED)
             } else {
                 Style::default()
             });
 
-        app.popup
+        app.ui
+            .popup
             .value
-            .set_placeholder_text(if app.popup.state == PopupState::Headers {
+            .set_placeholder_text(if app.ui.popup.state == PopupState::Headers {
                 "Enter a value (e.g. application/json)"
-            } else if app.popup.state == PopupState::Params {
+            } else if app.ui.popup.state == PopupState::Params {
                 "Enter a value"
             } else {
                 ""
             });
-        app.popup.value.set_block(
+        app.ui.popup.value.set_block(
             Block::default()
                 .borders(Borders::ALL)
                 .title("Value")
                 .title_style(
-                    Style::default().fg(if app.popup.focus == PopupFocusState::Value {
+                    Style::default().fg(if app.ui.popup.focus == PopupFocusState::Value {
                         Color::Green
                     } else {
                         Color::default()
                     }),
                 )
-                .border_style(
-                    Style::default().fg(if app.popup.focus == PopupFocusState::Value {
+                .border_style(Style::default().fg(
+                    if app.ui.popup.focus == PopupFocusState::Value {
                         Color::Green
                     } else {
                         Color::DarkGray
-                    }),
-                ),
+                    },
+                )),
         );
-        app.popup
+        app.ui
+            .popup
             .value
-            .set_cursor_style(if app.popup.focus == PopupFocusState::Value {
+            .set_cursor_style(if app.ui.popup.focus == PopupFocusState::Value {
                 Style::default().add_modifier(Modifier::REVERSED)
             } else {
                 Style::default()
             });
 
-        f.render_widget(&app.popup.key, chunks[1]);
-        f.render_widget(&app.popup.value, chunks[2]);
+        f.render_widget(&app.ui.popup.key, chunks[1]);
+        f.render_widget(&app.ui.popup.value, chunks[2]);
     }
 }

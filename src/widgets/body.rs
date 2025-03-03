@@ -1,4 +1,4 @@
-use crate::app::{App, Focus};
+use crate::application::{app::App, ui_state::Focus};
 use ratatui::{
     layout::Rect,
     style::{Color, Modifier, Style},
@@ -9,7 +9,7 @@ use ratatui::{
 pub fn draw(f: &mut Frame, area: Rect, app: &mut App) {
     app.request
         .body
-        .set_cursor_style(if app.focus == Focus::Body {
+        .set_cursor_style(if app.ui.focus == Focus::Body {
             Style::default().add_modifier(Modifier::REVERSED)
         } else {
             Style::default()
@@ -19,12 +19,12 @@ pub fn draw(f: &mut Frame, area: Rect, app: &mut App) {
         Block::default()
             .borders(Borders::ALL)
             .title("Body")
-            .title_style(Style::default().fg(if app.focus == Focus::Body {
+            .title_style(Style::default().fg(if app.ui.focus == Focus::Body {
                 Color::Green
             } else {
                 Color::default()
             }))
-            .border_style(Style::default().fg(if app.focus == Focus::Body {
+            .border_style(Style::default().fg(if app.ui.focus == Focus::Body {
                 Color::Green
             } else {
                 Color::DarkGray
